@@ -1,6 +1,6 @@
 {
   "name": "chat_room",
-  "description": "Sample Express Application to test out using Package.json to install dependencies",
+  "description": "Web app that allows users to synchronously communicate in a simple, clean chat interface.",
   "dependencies": {
     "body-parser": "^1.15.0",
     "ejs": "^1.0.0",
