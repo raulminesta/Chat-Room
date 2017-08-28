@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Group Chat</title>
+      <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> -->
+      <link href="style.css" rel="stylesheet" type="text/css">
+      <!--Import Google Icon Font-->
+      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+      <script type="text/javascript" src="js/materialize.min.js"></script>
+      <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+      <script type="text/javascript">
+        $(document).ready(function () {
+          var socket = io.connect();
+          var current_user;
+          var new_user = function(){
+            var name = prompt("Please enter your name to chat:");
+            socket.emit("page_load", {user: name})
+          }
+          var scroll = function (){
+            var d = document.getElementById('chat')
+            d.scrollTop = d.scrollHeight;
+          }
+          new_user();
+
+          socket.on("existing_user", function(data){
+            $("#error").html(data.error)
+            new_user();
+          })
+          socket.on("load_messages", function(data){
+            $("#error").html("") //reset error message.
+            console.log("this is a new user",data)
+            current_user = data.current_user
+            var messages = data.messages;
+            var messages_thread = "";
+            for (var i=0; i<messages.length;i++){
+              messages_thread += "<p>"+ messages[i].name + ": " + messages[i].message + "</p>";
+            }
+            $("#chat").append(messages_thread);
+            scroll()
+          })
+
+          $("#new_message").submit(function(){
+
+            socket.emit("new_message", {message: $("#message").val(), user: current_user})
+            $("#message").val("")
+            return false;
+          })
+          socket.on("post_new_message", function(data){
+            $("#chat").append("<p>" + data.user + ": " + data.new_message + "</p>");
+            scroll()
+          })
+
+
+          // $('#chat').animate({scrollTop: $('#chat').get(0).scrollHeight}, 100);
+          // $("#sendbutton").click(function(){
+          //     alert($("#chat").scrollTop());
+          // });
+
+        })
+    </script>
+  </head>
+  <body>
+    <div class="container blue lighten-2">
+      <div class="z-depth-5 card-panel teal lighten-2">
+        <h3 class="center-align cyan-text text-lighten-4">Conversation Board</h3>
+        <div id="chat" class="z-depth-4 card-panel teal darken-2 white-text text-darken-4"></div>
+        <form id="new_message" class=" z-depth-4 card-panel red lighten-2">
+          <input id="message" class="white-text darken-4" type="text" placeholder="Enter message here">
+          <input class="waves-effect waves-light btn-large" id="sendbutton" type="submit" value="Send">
+        </form>
+        <div id="error" class="white-text darken-4"></div>
+      </div>
+    </div>
+  </body>
+</html>

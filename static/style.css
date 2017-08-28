@@ -1,0 +1,26 @@
+*{
+  margin: 0px;
+  padding: 0px;
+}
+/*.wrapper{
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+}
+h3{
+  margin: 0px auto;
+  width: 80vw;
+}*/
+#chat{
+  /*outline: 2px solid black;*/
+  height: 300px;
+  /*width: 500px;*/
+  overflow-y: auto;
+  /*margin: 0px auto;*/
+}
+/*#message{
+  width: 30vw;
+  margin-left: 300px;
+  margin-top: 10px;
+  padding: 5px;
+}*/
